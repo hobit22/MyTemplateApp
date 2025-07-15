@@ -7,6 +7,7 @@ interface Props {
   lang: 'ko' | 'en';
   size: 'medium' | 'large';
   width: 'wide' | 'narrow';
+  navigation?: any;
 }
 
 const imageMap = {
@@ -32,12 +33,17 @@ const imageMap = {
   },
 };
 
-const KakaoLoginButton = ({ lang = 'ko', size = 'medium', width = 'narrow' }: Props) => {
+const KakaoLoginButton = ({ lang = 'ko', size = 'medium', width = 'narrow', navigation }: Props) => {
 
   const handleLogin = async (): Promise<void> => {
     try {
       const token = await login();
       useAuthStore.getState().setToken(token.accessToken);
+      const userInfo = useAuthStore.getState().userInfo;
+      
+      if (!userInfo && navigation) {
+        navigation.navigate('Gender');
+      }
     } catch (err) {
       console.error('login err', err);
     }

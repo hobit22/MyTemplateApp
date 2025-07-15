@@ -5,18 +5,21 @@ import AuthNavigator from './src/navigation/AuthNavigator';
 import { useAuthStore } from './src/store/authStore';
 
 export default function App() {
-  const { token, init } = useAuthStore();
+  const { token, userInfo, init, clearUserInfo } = useAuthStore();
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    init().finally(() => setIsReady(true));
-  }, [init]);
+    init().finally(() => {
+      setIsReady(true);
+      clearUserInfo();
+    });
+  }, [init, clearUserInfo]);
 
   if (!isReady) return null; // 로딩 화면 대체 가능
 
   return (
     <NavigationContainer>
-      {token ? <AppNavigator /> : <AuthNavigator />}
+      {!token ? <AuthNavigator /> : !userInfo ? <AuthNavigator /> : <AppNavigator />}
     </NavigationContainer>
   );
 }
